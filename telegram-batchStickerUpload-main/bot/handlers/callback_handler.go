@@ -7,6 +7,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"os/exec"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
@@ -119,6 +120,14 @@ func GetPicture(bot *tgbotapi.BotAPI, photo1, photo2 *[]tgbotapi.PhotoSize) {
 }
 
 func GenerateStickerPack(bot *tgbotapi.BotAPI) {
-	//stickers := make([]tgbotapi.Sticker, 0)
+	cmd := exec.Command("TGAPIKEY=6753629557:AAFYqNxfYFLpAzPKtjLOo74703yg2bo6_3o", "go", "run", "main.go", "./uploads/")
+	cmd.Dir = "../telegram-batchStickerUpload-main"
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Println("Ошибка: не удалось выполнить скрипт. \n", string(out), err)
+		return
+	}
+	log.Println("Скрипт успешно выполнен. \n", string(out))
+
 
 }
