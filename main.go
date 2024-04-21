@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -15,7 +14,6 @@ import (
 func main() {
 	bot, err := tgbotapi.NewBotAPI("6753629557:AAFYqNxfYFLpAzPKtjLOo74703yg2bo6_3o")
 	if err != nil {
-		fmt.Println("1")
 		log.Fatal(err)
 	}
 
@@ -26,7 +24,6 @@ func main() {
 
 	updates, err := bot.GetUpdatesChan(u)
 	if err != nil {
-		fmt.Println("2")
 		log.Fatal(err)
 	}
 
@@ -46,7 +43,7 @@ func main() {
 		}
 
 		if update.Message.Text == "/sendTwoPhoto" {
-			handlers.SendTwoPhoto(bot)	
+			handlers.SendTwoPhoto(bot, updates)
 		}
 
 	}

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"os"
 	"strconv"
 
@@ -9,8 +8,9 @@ import (
 )
 
 var (
-	photo1 *[]tgbotapi.PhotoSize
-	photo2 *[]tgbotapi.PhotoSize
+	photo1      *[]tgbotapi.PhotoSize
+	photo2      *[]tgbotapi.PhotoSize
+	secondPhoto bool
 )
 
 func SayHello(bot *tgbotapi.BotAPI) {
@@ -19,15 +19,8 @@ func SayHello(bot *tgbotapi.BotAPI) {
 	bot.Send(msg)
 }
 
-func SendTwoPhoto(bot *tgbotapi.BotAPI) {
+func SendTwoPhoto(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) {
 	msgChatID, _ := strconv.ParseInt(os.Getenv("CHAT_ID"), 10, 64)
-
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-	updates, err := bot.GetUpdatesChan(u)
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	var secondPhoto bool
 
@@ -37,57 +30,26 @@ func SendTwoPhoto(bot *tgbotapi.BotAPI) {
 		}
 		if update.Message.Photo != nil && !secondPhoto {
 			photo1 = update.Message.Photo
-			msg := tgbotapi.NewMessage(msgChatID, "Успешно1")
+			msg := tgbotapi.NewMessage(msgChatID, "Отправьте вторую фотографию")
 			bot.Send(msg)
 			secondPhoto = true
 
 		} else if update.Message.Photo != nil && secondPhoto {
 			photo2 = update.Message.Photo
 
-			msg := tgbotapi.NewMessage(msgChatID, "Успешно2")
+			msg := tgbotapi.NewMessage(msgChatID, "Обе фотографии загружены")
 			bot.Send(msg)
+			GetPicture(bot, photo1, photo2)
+			GenerateStickerPack(bot)
+
 		} else {
 			msg := tgbotapi.NewMessage(msgChatID, "Просим отправить фото")
 			bot.Send(msg)
 			secondPhoto = false
 		}
-
 	}
-
 }
 
-// package main
+func GetDataForStickerPack() {
 
-// import (
-// 	"log"
-
-// 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-// )
-
-// func main() {
-// 	bot, err := tgbotapi.NewBotAPI("6753629557:AAFYqNxfYFLpAzPKtjLOo74703yg2bo6_3o")
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	bot.Debug = true
-// 	u := tgbotapi.NewUpdate(0)
-// 	u.Timeout = 60
-// 	updates, err := bot.GetUpdatesChan(u)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	for update := range updates {
-// 		if update.Message == nil {
-// 			continue
-// 		}
-// 		if update.Message.Photo != nil {
-// 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Успешно")
-
-// 			bot.Send(msg)
-// 		} else {
-// 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Просим отправить фото")
-// 			bot.Send(msg)
-// 		}
-// 	}
-// }
+}
